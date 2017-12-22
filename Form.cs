@@ -25,7 +25,7 @@ namespace connect_four
             InitializeComponent();
             this.Width = Consts.WIDTH + 20;
             this.Height = Consts.HEIGHT + 40;
-            board = new Board(this, new AI1(), new AI1());
+            board = new Board(this, new AI1(), new AI2());
         }
 
         /*
@@ -33,7 +33,6 @@ namespace connect_four
          */
         private void Form_Paint(object sender, PaintEventArgs e)
         {
-            Console.WriteLine("drawing");
             Graphics g = e.Graphics;
             Pen pen = new Pen(Color.Blue);
 
