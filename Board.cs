@@ -187,46 +187,47 @@ namespace connect_four
          */
         private bool checkWin(int row, int col)
         {
-            for (int rowDir = -1; rowDir <= 1; rowDir++)
+            if (checkWinHelper(row, col, 0, -1, 1) >= 4) //Check downwards
             {
-                for (int colDir = -1; colDir <= 1; colDir++)
-                {
-                    if (colDir != 0 || rowDir != 0) //as long as not both 0 (i.e. same piece)
-                    {
-                        bool win = checkWinHelper(row,col,rowDir,colDir,1);
-                        if (win)
-                        {
-                            return true;
-                        }
-                    }
-                }
+                return true;
+            }
+            else if ((checkWinHelper(row, col,-1, -1, 1) + checkWinHelper(row, col, -1, 0, 0)) >= 4) //check horz
+            {
+                return true;
+            }
+            else if ((checkWinHelper(row, col, 1, 1, 1) + checkWinHelper(row, col, -1, -1, 0)) >= 4) //check /
+            {
+                return true;
+            }
+            else if ((checkWinHelper(row, col, -1, 1, 1) + checkWinHelper(row, col, 1, -1, 0)) >= 4) //check \
+            {
+                return true;
             }
             return false;
         }
 
         /*
-         * Recursive method used to check if there are 4 pieces
-         * in a given direction
+         * Returns how many pieces are in a row in a given direction
          */ 
-        private bool checkWinHelper(int row, int col, int rowDir, int colDir, int count)
+        private int checkWinHelper(int row, int col, int rowDir, int colDir, int count)
         {
             row = row + rowDir;
             col = col + colDir;
 
             if (row < 0 || row >= (int)Consts.NUM_ROWS || col < 0 | col >= (int)Consts.NUM_COLS)
             {
-                return false; //out of bounds
+                return count; //out of bounds
             }
             else if (pieces[row,col] != playerTurn) //doesn't continue
             {
-                return false;
+                return count;
             }
             else //continues
             {
                 count++;
                 if (count == 4) //reached 4
                 {
-                    return true;
+                    return 4;
                 }
                 else //not yet 4
                 {
