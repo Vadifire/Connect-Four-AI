@@ -1,0 +1,14 @@
+# Binaries
+bin/*
+obj/*
+
+# Local development
+*.env
+*.dev
+.DS_Store
+
+# Shortcuts
+*.lnk
+
+# Visual Studio Project File
+*.csproj
