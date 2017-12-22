@@ -187,11 +187,11 @@ namespace connect_four
          */
         private bool checkWin(int row, int col)
         {
-            if (checkWinHelper(row, col, 0, -1, 1) >= 4) //Check downwards
+            if (checkWinHelper(row, col, 0, -1, 1) >= 4) //Check downwards |
             {
                 return true;
             }
-            else if ((checkWinHelper(row, col,-1, -1, 1) + checkWinHelper(row, col, -1, 0, 0)) >= 4) //check horz
+            else if ((checkWinHelper(row, col,-1, 0, 1) + checkWinHelper(row, col, 1, 0, 0)) >= 4) //check horz -
             {
                 return true;
             }

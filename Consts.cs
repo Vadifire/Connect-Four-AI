@@ -6,7 +6,7 @@
         public const int HEIGHT = 480;
         public const int NUM_ROWS = 6;
         public const int NUM_COLS = 7;
-        public const int SLEEP_TIME = 1500;
+        public const int SLEEP_TIME = 500;
         public enum TEAM { NONE = 0, YELLOW = 1, RED = 2 };
 
     }
