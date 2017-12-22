@@ -22,10 +22,10 @@ namespace connect_four
         {
             this.player1 = p1;
             this.player2 = p2;
-            pieces = new int[consts.NUM_ROWS, consts.NUM_COLS];
-            nextRows = new int[consts.NUM_COLS]; //default int value 0
+            pieces = new int[Consts.NUM_ROWS, Consts.NUM_COLS];
+            nextRows = new int[Consts.NUM_COLS]; //default int value 0
             pieceCount = 0;
-            playerTurn = (int)consts.TEAM.YELLOW;
+            playerTurn = (int)Consts.TEAM.YELLOW;
             gameOver = false;
 
             while (gameOver == false)
@@ -45,7 +45,7 @@ namespace connect_four
         {
             int col = getColumn();
             Console.WriteLine("Column " + col + " selected.");
-            if (col >= consts.NUM_COLS)
+            if (col >= Consts.NUM_COLS)
             {
                 Console.WriteLine("Invalid Move - Column Out of Bounds.");
                 swapPlayerTurn();
@@ -59,15 +59,19 @@ namespace connect_four
             }
             else
             {
-                pieces[nextRows[col]++, col] = playerTurn;
-                checkWin(); // check win condition
+                pieces[nextRows[col], col] = playerTurn;
+                if (checkWin(nextRows[col], col)) //returns if player has won
+                {
+                    declareWinner(playerTurn);
+                }
+                nextRows[col]++; //increment nextRow indicator
                 pieceCount++; //increment number of pieces by 1
                 swapPlayerTurn();
 
                 // check draw condition
-                if (pieceCount == consts.NUM_ROWS * consts.NUM_COLS)
+                if (pieceCount == Consts.NUM_ROWS * Consts.NUM_COLS)
                 {
-                    declareWinner((int)consts.TEAM.NONE);
+                    declareWinner((int)Consts.TEAM.NONE);
                 }
             }
         }
@@ -77,13 +81,13 @@ namespace connect_four
          */
         private int getColumn()
         {
-            if (playerTurn == (int)consts.TEAM.YELLOW)
+            if (playerTurn == (int)Consts.TEAM.YELLOW)
             {
-                return player1.selectColumn(this, (int)consts.TEAM.YELLOW);
+                return player1.selectColumn(this, (int)Consts.TEAM.YELLOW);
             }
             else
             {
-                return player2.selectColumn(this, (int)consts.TEAM.RED);
+                return player2.selectColumn(this, (int)Consts.TEAM.RED);
             }
         }
 
@@ -92,13 +96,13 @@ namespace connect_four
          */
         private void swapPlayerTurn()
         {
-            if (playerTurn == (int)consts.TEAM.YELLOW)
+            if (playerTurn == (int)Consts.TEAM.YELLOW)
             {
-                playerTurn = (int)consts.TEAM.RED;
+                playerTurn = (int)Consts.TEAM.RED;
             }
             else
             {
-                playerTurn = (int)consts.TEAM.YELLOW;
+                playerTurn = (int)Consts.TEAM.YELLOW;
             }
         }
 
@@ -109,13 +113,13 @@ namespace connect_four
         {
             switch (winner)
             {
-                case (int)consts.TEAM.NONE:
+                case (int)Consts.TEAM.NONE:
                     Console.WriteLine("The game ended in a Draw.");
                     break;
-                case (int)consts.TEAM.YELLOW:
+                case (int)Consts.TEAM.YELLOW:
                     Console.WriteLine("The Yellow Player has Won.");
                     break;
-                case (int)consts.TEAM.RED:
+                case (int)Consts.TEAM.RED:
                     Console.WriteLine("The Red Player has Won.");
                     break;
             }
@@ -128,7 +132,7 @@ namespace connect_four
          */
         public int getPiece(int row, int col)
         {
-            if (row >= (int)consts.NUM_ROWS || col >= (int)consts.NUM_COLS)
+            if (row >= (int)Consts.NUM_ROWS || col >= (int)Consts.NUM_COLS)
             {
                 return -1; // out of bounds
             }
@@ -149,7 +153,7 @@ namespace connect_four
          */
         public int getNextRow(int col)
         {
-            if (col >= (int)consts.NUM_COLS)
+            if (col >= (int)Consts.NUM_COLS)
             {
                 return -1; // out of bounds
             }
@@ -162,19 +166,64 @@ namespace connect_four
          */
         public bool columnFull(int col)
         {
-            if (col >= (int)consts.NUM_COLS)
+            if (col >= (int)Consts.NUM_COLS)
             {
                 return false; // out of bounds
             }
-            return nextRows[col] >= consts.NUM_ROWS;
+            return nextRows[col] >= Consts.NUM_ROWS;
         }
 
         /*
          * Check if the last placed piece causes a win
          */
-        private bool checkWin()
+        private bool checkWin(int row, int col)
         {
+            for (int rowDir = -1; rowDir <= 1; rowDir++)
+            {
+                for (int colDir = -1; colDir <= 1; colDir++)
+                {
+                    if (colDir != 0 || rowDir != 0) //as long as not both 0 (i.e. same piece)
+                    {
+                        bool win = checkWinHelper(row,col,rowDir,colDir,1);
+                        if (win)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
             return false;
+        }
+
+        /*
+         * Recursive method used to check if there are 4 pieces
+         * in a given direction
+         */ 
+        private bool checkWinHelper(int row, int col, int rowDir, int colDir, int count)
+        {
+            row = row + rowDir;
+            col = col + colDir;
+
+            if (row < 0 || row >= (int)Consts.NUM_ROWS || col < 0 | col >= (int)Consts.NUM_COLS)
+            {
+                return false; //out of bounds
+            }
+            else if (pieces[row,col] != playerTurn) //doesn't continue
+            {
+                return false;
+            }
+            else //continues
+            {
+                count++;
+                if (count == 4) //reached 4
+                {
+                    return true;
+                }
+                else //not yet 4
+                {
+                    return checkWinHelper(row, col, rowDir, colDir, count);
+                }
+            }
         }
     }
 }

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace connect_four
+﻿namespace connect_four
 {
-    public class consts
+    public class Consts
     {
         public const int WIDTH = 640;
         public const int HEIGHT = 480;
