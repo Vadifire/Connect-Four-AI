@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace connect_four
@@ -10,6 +11,13 @@ namespace connect_four
 
         public Form()
         {
+            // Use Buffering to avoid flickering
+            this.SetStyle(
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.UserPaint |
+                ControlStyles.DoubleBuffer,
+                true);
+
             innerX = 20;
             innerY = 20;
             innerW = Consts.WIDTH - 40;
@@ -17,7 +25,7 @@ namespace connect_four
             InitializeComponent();
             this.Width = Consts.WIDTH + 20;
             this.Height = Consts.HEIGHT + 40;
-            board = new Board(new AI1(), new AI1());
+            board = new Board(this, new AI1(), new AI1());
         }
 
         /*
@@ -25,8 +33,8 @@ namespace connect_four
          */
         private void Form_Paint(object sender, PaintEventArgs e)
         {
+            Console.WriteLine("drawing");
             Graphics g = e.Graphics;
-
             Pen pen = new Pen(Color.Blue);
 
             for (int r = 0; r <= Consts.NUM_ROWS; r++)

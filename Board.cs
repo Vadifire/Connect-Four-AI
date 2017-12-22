@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace connect_four
 {
@@ -14,12 +17,14 @@ namespace connect_four
         private AI player1; //yellow player
         private AI player2; //red player
         private bool gameOver;
+        private Form form;
 
         /*
          * Intializes empty Board
          */
-        public Board(AI p1, AI p2)
+        public Board(Form f, AI p1, AI p2)
         {
+            this.form = f;
             this.player1 = p1;
             this.player2 = p2;
             pieces = new int[Consts.NUM_ROWS, Consts.NUM_COLS];
@@ -28,11 +33,15 @@ namespace connect_four
             playerTurn = (int)Consts.TEAM.YELLOW;
             gameOver = false;
 
-            while (gameOver == false)
+            Task.Factory.StartNew(async () =>
             {
-                processTurn();
-                //System.Threading.Thread.Sleep(consts.SLEEP_TIME);
-            }
+                while (gameOver == false)
+                {
+                    await Task.Delay(Consts.SLEEP_TIME);
+                    processTurn();
+                    f.Invalidate();
+                }
+            });
         }
 
         /*
